@@ -1096,7 +1096,7 @@ let commands = [
     if (Number.isInteger(parseInt(config.port))) {
       startServer(config.port, cb);
     } else if (config.port === "auto") {
-      tryStartServer(3000, cb);
+      tryStartServer(process.env.PORT || 3000, cb);
     } else {
       cb(new Error(`Invalid port: ${config.port}`));
     }
