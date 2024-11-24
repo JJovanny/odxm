@@ -199,8 +199,8 @@ module.exports = {
 
         async.series([ 
             cb => {
-                //req.body.options =  [{"name":"min-num-features","value":"15000"},{"name":"feature-quality","value":"ultra"},{"name":"use-3dmesh","value":true},{"name":"skip-report","value":true},{"name":"mesh-octree-depth","value":"12"},{"name":"pc-quality","value":"ultra"},{"name":"texturing-single-material","value":true},{"name":"use-exif","value":true},{"name":"dtm","value":true},{"name":"dem-resolution","value":"1"},{"name":"orthophoto-resolution","value":"1"},{"name":"video-limit","value":"500"},{"name":"force-gps","value":true}]
-                req.body.options = [{"name":"min-num-features","value":"15000"},{"name":"feature-quality","value":"ultra"},{"name":"use-3dmesh","value":true},{"name":"skip-report","value":true},{"name":"mesh-octree-depth","value":"12"},{"name":"pc-quality","value":"ultra"},{"name":"texturing-single-material","value":true},{"name":"use-exif","value":true},{"name":"dtm","value":true},{"name":"dem-resolution","value":"1"},{"name":"orthophoto-resolution","value":"1"},{"name":"video-limit","value":"500"},{"name":"force-gps","value":true}];
+                // [{"name":"min-num-features","value":"15000"},{"name":"feature-quality","value":"ultra"},{"name":"use-3dmesh","value":true},{"name":"skip-report","value":true},{"name":"mesh-octree-depth","value":"12"},{"name":"pc-quality","value":"ultra"},{"name":"texturing-single-material","value":true},{"name":"use-exif","value":true},{"name":"dtm","value":true},{"name":"dem-resolution","value":"1"},{"name":"orthophoto-resolution","value":"1"},{"name":"video-limit","value":"500"},{"name":"force-gps","value":true}]
+                req.body.options = [{"name":"use-3dmesh","value":true},{"name":"texturing-single-material","value":true}];
                 // Check for problems before file uploads
                 if (req.body && req.body.options){
                     odmInfo.filterOptions(req.body.options, err => {
@@ -229,7 +229,7 @@ module.exports = {
 
     createTask: (req, res) => {
         const srcPath = path.join("tmp", req.id);
-        console.log('create task')
+        console.log('create')
         // Print error message and cleanup
         const die = (error) => {
             res.json({error});
