@@ -633,24 +633,6 @@ app.get("/task/:uuid/model", authCheck, getTaskFromUuid, (req, res) => {
         );
         res.setHeader("Content-Type", "application/octet-stream");
         res.setHeader("Content-Length", fs.statSync(outputFile).size);
-        
-        const processingFilePath = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
-
-        if (fs.existsSync(processingFilePath)) {
-
-          const command = `del /f /q "${processingFilePath}"`;
-
-          exec(command, (error, stdout, stderr) => {
-            if (error) {
-              console.error('Error al eliminar el archivo:', error.message);
-            }
-            if (stderr) {
-              console.error('Error de ejecución:', stderr);
-            }
-            console.log('Archivo eliminado con éxito');
-          });
-        }
-
         const fileStream = fs.createReadStream(outputFile);
         fileStream.pipe(res);
       } else {

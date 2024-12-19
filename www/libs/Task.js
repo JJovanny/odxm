@@ -551,6 +551,24 @@ module.exports = class Task{
             async.series(tasks, async (err) => {
                 if (!err){
                     this.setStatus(statusCodes.COMPLETED);
+
+                    const processingFilePath = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
+
+                    if (fs.existsSync(processingFilePath)) {
+            
+                      const command = `del /f /q "${processingFilePath}"`;
+            
+                      exec(command, (error, stdout, stderr) => {
+                        if (error) {
+                          console.error('Error al eliminar el archivo:', error.message);
+                        }
+                        if (stderr) {
+                          console.error('Error de ejecución:', stderr);
+                        }
+                        console.log('Archivo eliminado con éxito');
+                      });
+                    }
+
                     await this.downloadModel();
                     console.log('Ok');
                     finished();
