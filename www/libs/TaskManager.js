@@ -200,23 +200,6 @@ class TaskManager {
             if (task) {
                 this.addToRunningQueue(task);
                 task.start(() => {
-
-                    const processingFilePath = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
-
-                    if (!fs.existsSync(processingFilePath)) {
-                        const command = `echo Archivo creado correctamente > "${processingFilePath}"`;
-
-                        exec(command, (error, stdout, stderr) => {
-                            if (error) {
-                                console.error('Error al crear el archivo:', error.message);
-                            }
-                            if (stderr) {
-                                console.error('Error de ejecución:', stderr);
-                            }
-                            console.log('Archivo creado con éxito');
-                        });
-                    }
-
                     task.callWebhooks();
 
                     this.removeFromRunningQueue(task);

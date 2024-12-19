@@ -16,7 +16,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const { exec } = require("child_process");
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -435,7 +434,9 @@ module.exports = {
                             // Cleanup
                             removeDirectory(srcPath);
                             removeDirectory(destPath);
-                        } else TaskManager.singleton().processNextTask();
+                        } else {
+                            TaskManager.singleton().processNextTask();
+                        }
                     }, initSteps);
                 }
             ], err => {

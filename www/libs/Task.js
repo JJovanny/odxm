@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 "use strict";
-
+const { exec } = require("child_process");
 const config = require('../config');
 const async = require('async');
 const os = require('os');
@@ -548,8 +548,6 @@ module.exports = class Task{
                 });
             }
 
-
-            // aqui
             async.series(tasks, async (err) => {
                 if (!err){
                     this.setStatus(statusCodes.COMPLETED);
@@ -568,6 +566,22 @@ module.exports = class Task{
             this.startTrackingProcessingTime();
             this.dateStarted = new Date().getTime();
             this.setStatus(statusCodes.RUNNING);
+
+                const processingFilePath = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
+
+                if (!fs.existsSync(processingFilePath)) {
+                    const command = `echo Archivo creado correctamente > "${processingFilePath}"`;
+
+                    exec(command, (error, stdout, stderr) => {
+                        if (error) {
+                            console.error('Error al crear el archivo:', error.message);
+                        }
+                        if (stderr) {
+                            console.error('Error de ejecución:', stderr);
+                        }
+                        console.log('Archivo creado con éxito');
+                    });
+                }
 
             let runnerOptions = this.options.reduce((result, opt) => {
                 result[opt.name] = opt.value;
@@ -592,6 +606,24 @@ module.exports = class Task{
             this.runningProcesses.push(odmRunner.run(runnerOptions, this.uuid, (err, code, signal) => {
                     if (err){
                         this.setStatus(statusCodes.FAILED, {errorMessage: `Could not start process (${err.message})`});
+
+                        const processingFilePathDelete = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
+
+                        if (fs.existsSync(processingFilePathDelete)) {
+
+                            const commandDelete = `del /f /q "${processingFilePathDelete}"`;
+                  
+                            exec(commandDelete, (error, stdout, stderr) => {
+                              if (error) {
+                                console.error('Error al eliminar el archivo:', error.message);
+                              }
+                              if (stderr) {
+                                console.error('Error de ejecución:', stderr);
+                              }
+                              console.log('Archivo eliminado con éxito');
+                            });
+                        }
+
                         finished(err);
                     }else{
                         // Don't evaluate if we caused the process to exit via SIGINT?
