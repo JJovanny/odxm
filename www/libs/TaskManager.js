@@ -237,6 +237,24 @@ class TaskManager {
         if (task) {
             if (!task.isCanceled()) {
                 task.cancel(err => {
+
+                    const processingFilePathDelete = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
+
+                    if (fs.existsSync(processingFilePathDelete)) {
+                
+                        const commandDelete = `del /f /q "${processingFilePathDelete}"`;
+                
+                        exec(commandDelete, (error, stdout, stderr) => {
+                          if (error) {
+                            console.error('Error al eliminar el archivo:', error.message);
+                          }
+                          if (stderr) {
+                            console.error('Error de ejecución:', stderr);
+                          }
+                          console.log('Archivo eliminado con éxito');
+                        });
+                    }
+
                     this.removeFromRunningQueue(task);
                     this.processNextTask();
                     cb(err);

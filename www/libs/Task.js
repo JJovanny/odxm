@@ -567,21 +567,7 @@ module.exports = class Task{
             this.dateStarted = new Date().getTime();
             this.setStatus(statusCodes.RUNNING);
 
-                const processingFilePath = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
 
-                if (!fs.existsSync(processingFilePath)) {
-                    const command = `echo Archivo creado correctamente > "${processingFilePath}"`;
-
-                    exec(command, (error, stdout, stderr) => {
-                        if (error) {
-                            console.error('Error al crear el archivo:', error.message);
-                        }
-                        if (stderr) {
-                            console.error('Error de ejecución:', stderr);
-                        }
-                        console.log('Archivo creado con éxito');
-                    });
-                }
 
             let runnerOptions = this.options.reduce((result, opt) => {
                 result[opt.name] = opt.value;
@@ -607,7 +593,7 @@ module.exports = class Task{
                     if (err){
                         this.setStatus(statusCodes.FAILED, {errorMessage: `Could not start process (${err.message})`});
 
-                        const processingFilePathDelete = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
+                        const processingFilePathDelete = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
 
                         if (fs.existsSync(processingFilePathDelete)) {
 
@@ -647,10 +633,28 @@ module.exports = class Task{
                                     case 3:
                                         errorMessage = `Installation issue`;
                                         break;
-                                    default:
+                                    default: 
                                         errorMessage = `Processing failed (${code})`;
                                         break;
                                 }
+
+                                const processingFilePathDelete = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
+
+                                if (fs.existsSync(processingFilePathDelete)) {
+        
+                                    const commandDelete = `del /f /q "${processingFilePathDelete}"`;
+                          
+                                    exec(commandDelete, (error, stdout, stderr) => {
+                                      if (error) {
+                                        console.error('Error al eliminar el archivo:', error.message);
+                                      }
+                                      if (stderr) {
+                                        console.error('Error de ejecución:', stderr);
+                                      }
+                                      console.log('Archivo eliminado con éxito');
+                                    });
+                                }
+                                
                                 this.setStatus(statusCodes.FAILED, { errorMessage });
                                 finished();
                             }
@@ -669,6 +673,22 @@ module.exports = class Task{
                 })
             );
 
+            const processingFilePath = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
+
+            if (!fs.existsSync(processingFilePath)) {
+                const command = `echo Archivo creado correctamente > "${processingFilePath}"`;
+
+                exec(command, (error, stdout, stderr) => {
+                    if (error) {
+                        console.error('Error al crear el archivo:', error.message);
+                    }
+                    if (stderr) {
+                        console.error('Error de ejecución:', stderr);
+                    }
+                    console.log('Archivo creado con éxito');
+                });
+            }
+            
             return true;
         }else{
             return false;

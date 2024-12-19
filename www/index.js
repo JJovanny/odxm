@@ -611,7 +611,6 @@ app.get("/task/:uuid/model", authCheck, getTaskFromUuid, (req, res) => {
   console.log("convertFile", convertFile);
   console.log("texturing", texturing);
   
-  const processingFilePath = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
   const blenderCommand = `"C:/Program Files/Blender Foundation/Blender 3.6/blender.exe" -b --python "${convertFile}" -- "${inputFile}" "${outputFile}" "${texturing}"`;
 
   exec(blenderCommand, (err, stdout, stderr) => {
@@ -627,7 +626,15 @@ app.get("/task/:uuid/model", authCheck, getTaskFromUuid, (req, res) => {
 
     console.log(`Conversión completada: ${stdout}`);
 
-      if (fs.existsSync(outputFile)) {
+      if (fs.existsSync(outputFile)) {        
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${outputFile.split("/").pop()}"`
+        );
+        res.setHeader("Content-Type", "application/octet-stream");
+        res.setHeader("Content-Length", fs.statSync(outputFile).size);
+        
+        const processingFilePath = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
 
         if (fs.existsSync(processingFilePath)) {
 
@@ -643,13 +650,6 @@ app.get("/task/:uuid/model", authCheck, getTaskFromUuid, (req, res) => {
             console.log('Archivo eliminado con éxito');
           });
         }
-        
-        res.setHeader(
-          "Content-Disposition",
-          `attachment; filename="${outputFile.split("/").pop()}"`
-        );
-        res.setHeader("Content-Type", "application/octet-stream");
-        res.setHeader("Content-Length", fs.statSync(outputFile).size);
 
         const fileStream = fs.createReadStream(outputFile);
         fileStream.pipe(res);
