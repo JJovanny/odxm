@@ -565,8 +565,8 @@ module.exports = class Task{
                         if (stderr) {
                           console.error('Error de ejecución:', stderr);
                         }
-                        console.log('Archivo eliminado con éxito');
-                      });
+                        console.log('Archivo eliminado con éxito EN RUNNIN PROCESSES CUANDO DA ERROR');
+                    });
                     }
 
                     await this.downloadModel();
@@ -624,7 +624,7 @@ module.exports = class Task{
                               if (stderr) {
                                 console.error('Error de ejecución:', stderr);
                               }
-                              console.log('Archivo eliminado con éxito');
+                              console.log('Archivo eliminado con éxito EN RUNNIN PROCESSES CUANDO DA ERROR');
                             });
                         }
 
@@ -669,7 +669,7 @@ module.exports = class Task{
                                       if (stderr) {
                                         console.error('Error de ejecución:', stderr);
                                       }
-                                      console.log('Archivo eliminado con éxito');
+                                      console.log('Archivo eliminado con éxito EN RUNNIN PROCESSES');
                                     });
                                 }
                                 
@@ -701,10 +701,12 @@ module.exports = class Task{
                         console.error('Error al crear el archivo:', error.message);
                     }
                     if (stderr) {
-                        console.error('Error de ejecución:', stderr);
+                        console.error('Error de ejecución al crear el archivo:', stderr);
                     }
                     console.log('Archivo creado con éxito');
                 });
+            } else {
+                console.log('EL ARCHIVO YA EXISTE');
             }
             
             return true;
