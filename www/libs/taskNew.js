@@ -16,6 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+const { exec } = require("child_process");
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -152,6 +153,23 @@ module.exports = {
     handleCommit: (req, res, next) => {
         const srcPath = path.join("tmp", req.id);
         const bodyFile = path.join(srcPath, "body.json");
+
+        
+        const processingFilePath = 'C:/Users/Administrator/Desktop/processingGaussian.txt';
+
+        if (!fs.existsSync(processingFilePath)) {
+            const command = `echo Archivo creado correctamente > "${processingFilePath}"`;
+
+            exec(command, (error, stdout, stderr) => {
+                if (error) {
+                    console.error('Error al crear el archivo:', error.message);
+                }
+                if (stderr) {
+                    console.error('Error de ejecución:', stderr);
+                }
+                console.log('Archivo creado con éxito');
+            });
+        };
 
         async.series([
             cb => {
