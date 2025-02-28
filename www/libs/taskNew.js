@@ -174,7 +174,11 @@ module.exports = {
         ], (err, [ body, files ]) => {
             if (err) res.json({error: err.message});
             else{
-                req.body = body;
+                const dataFormtat = {
+                    ...body,
+                    api_url: req.body.api_url
+                }
+                req.body = dataFormtat;
                 req.files = files;
 
                 if (req.files.length === 0){
