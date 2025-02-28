@@ -253,7 +253,8 @@ module.exports = class Task{
     }
 
     async downloadModel() {
-        const url = this.url_api + '/external/model-task';  
+        const validUrl = this.url_api ? this.url_api : process.env.API_URL
+        const url = validUrl+'/external/model-task';  
         const bodyData = {
             taskId: this.uuid  
         };
