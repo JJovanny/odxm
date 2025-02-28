@@ -112,7 +112,9 @@ module.exports = {
     },
 
     getUUID: (req, res, next) => {
+        console.log('reqbody',req.body)
         req.id = req.params.uuid;
+        req.api_url = req.body.api_url;
         if (!req.id) res.json({error: `Invalid uuid (not set)`});
 
         const srcPath = path.join("tmp", req.id);
@@ -174,11 +176,7 @@ module.exports = {
         ], (err, [ body, files ]) => {
             if (err) res.json({error: err.message});
             else{
-                const dataFormtat = {
-                    ...body,
-                    api_url: req.body.api_url
-                }
-                req.body = dataFormtat;
+                req.body = body;
                 req.files = files;
 
                 if (req.files.length === 0){
@@ -419,9 +417,9 @@ module.exports = {
                 }, 
                 cb => {
 
-                    console.log('Headers:', req.body); 
+                    console.log('Headers:', req.api_url); 
 
-                    const api_url = `${req.body.api_url}/api`;
+                    const api_url = `${req.api_url}/api`;
 
                     const task = new Task(req.id, req.body.name, req.body.options,
                             req.body.webhook,
