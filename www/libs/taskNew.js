@@ -415,8 +415,9 @@ module.exports = {
                 }, 
                 cb => {
 
-                    const protocol = req.protocol; 
-                    const host = req.get('host');
+                    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+                    const host = req.headers['x-forwarded-host'] || req.get('host');
+
                     const url_api = `${protocol}://${host}/api`;
 
                     const task = new Task(req.id, req.body.name, req.body.options,
