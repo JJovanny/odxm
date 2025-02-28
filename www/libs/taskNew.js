@@ -416,11 +416,11 @@ module.exports = {
                 cb => {
 
                     console.log('Headers:', req.headers); 
-                    
+
                     const protocol = req.headers['x-forwarded-proto'] || req.protocol;
                     const host = req.headers['x-forwarded-host'] || req.get('host');
 
-                    const url_api = `${protocol}://${host}/api`;
+                    const url_api = `${req.headers['origin']}/api`;
 
                     const task = new Task(req.id, req.body.name, req.body.options,
                             req.body.webhook,
