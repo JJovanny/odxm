@@ -187,7 +187,6 @@ module.exports = {
 
     handleInit: (req, res) => {
         req.body = req.body || {};
-        console.l
         const srcPath = path.join("tmp", req.id);
         const bodyFile = path.join(srcPath, "body.json");
 
@@ -413,17 +412,23 @@ module.exports = {
                         if (!err) imagesCountEstimate = entries.length;
                         cb();
                     });
-                },
+                }, 
                 cb => {
+
+                    const protocol = req.protocol; 
+                    const host = req.get('host');
+                    const url_api = `${protocol}://${host}/api`;
+
                     const task = new Task(req.id, req.body.name, req.body.options,
                             req.body.webhook,
                             req.body.skipPostProcessing === 'true',
                             req.body.outputs,
                             req.body.dateCreated,
-                            imagesCountEstimate
+                            url_api,
+                            imagesCountEstimate,
                         );
                     TaskManager.singleton().addNew(task);
-                    res.json({ uuid: req.id });
+                    res.json({ uuid: req.id, task: task.url_api });
                     cb();
 
                     // We return a UUID right away but continue

@@ -40,7 +40,7 @@ require('dotenv').config();
 const statusCodes = require('./statusCodes');
 
 module.exports = class Task{
-    constructor(uuid, name, options = [], webhook = null, skipPostProcessing = false, outputs = [], dateCreated = new Date().getTime(), imagesCountEstimate = -1){
+    constructor(uuid, name, options = [], webhook = null, skipPostProcessing = false, outputs = [], dateCreated = new Date().getTime(),  url_api = null, imagesCountEstimate = -1){
         assert(uuid !== undefined, "uuid must be set");
 
         this.uuid = uuid;
@@ -61,7 +61,8 @@ module.exports = class Task{
         this.outputs = utils.parseUnsafePathsList(outputs);
         this.progress = 0;
         this.imagesCountEstimate = imagesCountEstimate;
-        this.initialized = false;
+        this.initialized = false; 
+        this.url_api = url_api;
         this.onInitialize = []; // Events to trigger on initialization
     }
 
@@ -156,7 +157,9 @@ module.exports = class Task{
             taskJson.webhook, 
             taskJson.skipPostProcessing,
             taskJson.outputs,
-            taskJson.dateCreated);
+            taskJson.dateCreated,
+            taskJson.url
+        );
 
         task.initialize((err, task) => {
             if (err) done(err);
@@ -250,7 +253,7 @@ module.exports = class Task{
     }
 
     async downloadModel() {
-        const url = process.env.API_URL + '/external/model-task';  
+        const url = this.url_api + '/external/model-task';  
         const bodyData = {
             taskId: this.uuid  
         };
@@ -703,7 +706,7 @@ module.exports = class Task{
                     if (stderr) {
                         console.error('Error de ejecución al crear el archivo:', stderr);
                     }
-                    console.log('Archivo creado con éxito');
+                    console.log('Archivo creado con éxito: ',this.uuid);
                 });
             } else {
                 console.log('EL ARCHIVO YA EXISTE');
@@ -751,6 +754,7 @@ module.exports = class Task{
             uuid: this.uuid,
             name: this.name,
             dateCreated: this.dateCreated,
+            url_api: this.url_api,
             processingTime: this.processingTime,
             status: this.status,
             options: this.options,
@@ -829,6 +833,7 @@ module.exports = class Task{
             uuid: this.uuid,
             name: this.name,
             dateCreated: this.dateCreated,
+            url_api: this.url_api,
             dateStarted: this.dateStarted,
             status: this.status,
             options: this.options,
