@@ -416,9 +416,9 @@ module.exports = {
                 }, 
                 cb => {
 
-                    console.log('Headers:', req.api_url); 
+                    console.log('Headers:', req.body); 
 
-                    const api_url = `${req.body.api_url}/api`;
+                    const api_url = `${req.body.api_url ? req.body.api_url : ''}/api`;
 
                     const task = new Task(req.id, req.body.name, req.body.options,
                             req.body.webhook,
