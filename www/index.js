@@ -88,6 +88,13 @@ let server;
  *          description: Optional URL to call when processing has ended (either successfully or unsuccessfully).
  *          required: false
  *          type: string
+ * 
+ * 
+ *  *       name: api_url
+ *          in: formData
+ *          description: Optional URL to call when processing has ended (either successfully or unsuccessfully).
+ *          required: false
+ *          type: string
  *        -
  *          name: outputs
  *          in: formData
@@ -213,11 +220,35 @@ app.post(
  *          schema:
  *            $ref: '#/definitions/Error'
  */
+// app.post(
+//   "/task/new/commit/:uuid",
+//   authCheck,
+//   taskNew.getUUID,
+//   taskNew.handleCommit,
+//   taskNew.createTask
+// );
+
 app.post(
   "/task/new/commit/:uuid",
+  (req, res, next) => {
+    console.log('Antes de bodyParser:', req.body);
+    next();
+  },
   authCheck,
+  (req, res, next) => {
+    console.log('Después de authCheck:', req.body);
+    next();
+  },
   taskNew.getUUID,
+  (req, res, next) => {
+    console.log('Después de getUUID:', req.body);
+    next();
+  },
   taskNew.handleCommit,
+  (req, res, next) => {
+    console.log('Después de handleCommit:', req.body);
+    next();
+  },
   taskNew.createTask
 );
 
