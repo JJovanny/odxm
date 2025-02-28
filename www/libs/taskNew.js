@@ -415,6 +415,8 @@ module.exports = {
                 }, 
                 cb => {
 
+                    console.log('Headers:', req.headers); 
+                    
                     const protocol = req.headers['x-forwarded-proto'] || req.protocol;
                     const host = req.headers['x-forwarded-host'] || req.get('host');
 
