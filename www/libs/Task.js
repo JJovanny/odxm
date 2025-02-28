@@ -40,7 +40,7 @@ require('dotenv').config();
 const statusCodes = require('./statusCodes');
 
 module.exports = class Task{
-    constructor(uuid, name, options = [], webhook = null, skipPostProcessing = false, outputs = [], dateCreated = new Date().getTime(),  url_api = null, imagesCountEstimate = -1){
+    constructor(uuid, name, options = [], webhook = null, skipPostProcessing = false, outputs = [], dateCreated = new Date().getTime(),  api_url = null, imagesCountEstimate = -1){
         assert(uuid !== undefined, "uuid must be set");
 
         this.uuid = uuid;
@@ -62,7 +62,7 @@ module.exports = class Task{
         this.progress = 0;
         this.imagesCountEstimate = imagesCountEstimate;
         this.initialized = false; 
-        this.url_api = url_api;
+        this.api_url = api_url;
         this.onInitialize = []; // Events to trigger on initialization
     }
 
@@ -253,7 +253,7 @@ module.exports = class Task{
     }
 
     async downloadModel() {
-        const validUrl = this.url_api ? this.url_api : process.env.API_URL
+        const validUrl = this.api_url ? this.api_url : process.env.API_URL
         const url = process.env.API_URL+'/external/model-task';  
         const bodyData = {
             taskId: this.uuid  
@@ -755,7 +755,7 @@ module.exports = class Task{
             uuid: this.uuid,
             name: this.name,
             dateCreated: this.dateCreated,
-            url_api: this.url_api,
+            api_url: this.api_url,
             processingTime: this.processingTime,
             status: this.status,
             options: this.options,
@@ -834,7 +834,7 @@ module.exports = class Task{
             uuid: this.uuid,
             name: this.name,
             dateCreated: this.dateCreated,
-            url_api: this.url_api,
+            api_url: this.api_url,
             dateStarted: this.dateStarted,
             status: this.status,
             options: this.options,

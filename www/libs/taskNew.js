@@ -415,23 +415,20 @@ module.exports = {
                 }, 
                 cb => {
 
-                    console.log('Headers:', req.headers); 
+                    console.log('Headers:', req.body); 
 
-                    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-                    const host = req.headers['x-forwarded-host'] || req.get('host');
-
-                    const url_api = `${req.headers['origin']}/api`;
+                    const api_url = `${req.body.api_url}/api`;
 
                     const task = new Task(req.id, req.body.name, req.body.options,
                             req.body.webhook,
                             req.body.skipPostProcessing === 'true',
                             req.body.outputs,
                             req.body.dateCreated,
-                            url_api,
+                            api_url,
                             imagesCountEstimate,
                         );
                     TaskManager.singleton().addNew(task);
-                    res.json({ uuid: req.id, task: task.url_api });
+                    res.json({ uuid: req.id, task: task.api_url });
                     cb();
 
                     // We return a UUID right away but continue
