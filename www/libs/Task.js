@@ -613,6 +613,7 @@ module.exports = class Task{
 
             this.runningProcesses.push(odmRunner.run(runnerOptions, this.uuid, (err, code, signal) => {
                     if (err){
+                        // aqui 
                         this.setStatus(statusCodes.FAILED, {errorMessage: `Could not start process (${err.message})`});
 
                         const processingFilePathDelete = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
@@ -630,6 +631,51 @@ module.exports = class Task{
                               }
                               console.log('Archivo eliminado con éxito EN RUNNIN PROCESSES CUANDO DA ERROR');
                             });
+                        }
+
+
+
+                        const processingFilePathError = `C:/Users/Administrator/Desktop/gaussianErrorLogs.txt`;
+
+                        const errorContent = `
+                        ========== ERROR REPORT ==========
+                        Timestamp: ${new Date().toISOString()}
+                        taskId: ${this.uuid}
+                        Error Message: ${err.message}
+                        Full Error: ${JSON.stringify(err, Object.getOwnPropertyNames(err), 2)}
+                        Exit Code: ${code}
+                        Signal: ${signal || 'N/A'}
+                        ==================================
+                        `;
+
+
+                        const writeErrorToFile = () => {
+                            fs.appendFile(processingFilePathError, errorContent, (fileErr) => {
+                                if (fileErr) {
+                                    console.error('Error al escribir en el archivo:', fileErr);
+                                } else {
+                                    console.log('Error registrado correctamente en:', processingFilePathError);
+                                }
+                            });
+                        };
+
+
+                        if (!fs.existsSync(processingFilePathError)) {
+                            const command = `echo Archivo creado correctamente > "${processingFilePathError}"`;
+
+                            exec(command, (error, stdout, stderr) => {
+                                if (error) {
+                                    console.error('Error al crear el archivo:', error.message);
+                                }
+                                if (stderr) {
+                                    console.error('Error de ejecución al crear el archivo:', stderr);
+                                }
+                            });
+
+                            writeErrorToFile(); 
+
+                        } else {
+                            writeErrorToFile(); 
                         }
 
                         finished(err);
@@ -658,7 +704,7 @@ module.exports = class Task{
                                     default: 
                                         errorMessage = `Processing failed (${code})`;
                                         break;
-                                }
+                                } 
 
                                 const processingFilePathDelete = 'C:\\Users\\Administrator\\Desktop\\processingGaussian.txt';
 
@@ -678,6 +724,51 @@ module.exports = class Task{
                                 }
                                 
                                 this.setStatus(statusCodes.FAILED, { errorMessage });
+
+
+                                const processingFilePathError = `C:/Users/Administrator/Desktop/gaussianErrorLogs.txt`;
+
+                                const errorContent = `
+                                ========== ERROR REPORT ==========
+                                Timestamp: ${new Date().toISOString()}
+                                taskId: ${this.uuid}
+                                Error Message: ${errorMessage}
+                                Full Error: 
+                                Exit Code: ${code}
+                                Signal: ${signal || 'N/A'}
+                                ==================================
+                                `;
+        
+        
+                                const writeErrorToFile = () => {
+                                    fs.appendFile(processingFilePathError, errorContent, (fileErr) => {
+                                        if (fileErr) {
+                                            console.error('Error al escribir en el archivo:', fileErr);
+                                        } else {
+                                            console.log('Error registrado correctamente en:', processingFilePathError);
+                                        }
+                                    });
+                                };
+        
+        
+                                if (!fs.existsSync(processingFilePathError)) {
+                                    const command = `echo Archivo creado correctamente > "${processingFilePathError}"`;
+        
+                                    exec(command, (error, stdout, stderr) => {
+                                        if (error) {
+                                            console.error('Error al crear el archivo:', error.message);
+                                        }
+                                        if (stderr) {
+                                            console.error('Error de ejecución al crear el archivo:', stderr);
+                                        }
+                                    });
+        
+                                        writeErrorToFile(); 
+        
+                                } else {
+                                        writeErrorToFile(); 
+                                }
+
                                 finished();
                             }
                         }else{
