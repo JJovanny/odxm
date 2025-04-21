@@ -54,6 +54,9 @@ class TaskManager {
                 cb();
             },
             cb => {
+
+                this.restartTasks();
+
                 // Every hour
                 schedule.scheduleJob('0 * * * *', () => {
                     this.removeOldTasks();
@@ -61,12 +64,12 @@ class TaskManager {
                     this.removeStaleUploads();
                 });
 
-                if (config.maxRuntime > 0) {
-                    // Every minute
-                    schedule.scheduleJob('* * * * *', () => {
-                        this.checkTimeouts();
-                    });
-                }
+                // if (config.maxRuntime > 0) {
+                //     // Every minute
+                //     schedule.scheduleJob('* * * * *', () => {
+                //         this.checkTimeouts();
+                //     });
+                // }
 
                 cb();
             }
@@ -93,9 +96,11 @@ class TaskManager {
             let dateFinished = task.dateCreated;
             if (task.processingTime > 0) dateFinished += task.processingTime;
 
-            if ([statusCodes.FAILED,
-            statusCodes.COMPLETED,
-            statusCodes.CANCELED].indexOf(task.status.code) !== -1 &&
+            if ([
+            // statusCodes.FAILED,
+            statusCodes.COMPLETED
+            // statusCodes.CANCELED
+            ].indexOf(task.status.code) !== -1 &&
                 now - dateFinished > CLEANUP_TASKS_IF_OLDER_THAN) {
                 list.push(task.uuid);
             }
@@ -320,7 +325,7 @@ class TaskManager {
             let now = new Date().getTime();
 
             for (let uuid in this.tasks) {
-                let task = this.tasks[uuid];
+                let task = this.tasks[uuid]; 
 
                 if (task.isRunning() && task.dateStarted > 0 && (now - task.dateStarted) > config.maxRuntime * 60 * 1000) {
                     task.output.push(`Task timed out after ${Math.ceil(task.processingTime / 60 / 1000)} minutes.\n`);
@@ -328,6 +333,18 @@ class TaskManager {
                         logger.warn(`Task ${uuid} timed out`);
                     });
                 }
+            }
+        }
+    }
+
+    restartTasks(){
+        for (let uuid in this.tasks) {
+            let task = this.tasks[uuid];
+
+            if (task !== null && task !== undefined && task.isCanceled()) {
+               this.restart(uuid, task.options, () => {
+                    logger.info(`Task restart: ${uuid}`)
+               });
             }
         }
     }
